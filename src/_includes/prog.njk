@@ -1,0 +1,19 @@
+---
+layout: "base.njk" # This layout extends the base layout
+---
+
+<div>
+    <h2>{{ title }}</h2>
+
+    {% if tags %}
+    <div class="post-tags">
+        {% for tag in categories %}
+        <span class="post-tag">{{ tag }}</span>{% if not loop.last %} {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="post-content">
+        {{ content | safe }}
+    </div>
+</div>

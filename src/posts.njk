@@ -1,0 +1,17 @@
+---
+layout: "base.njk"
+title: "Posts"
+permalink: "/posts/index.html" # Defines the URL for this page
+---
+
+<ul class="item-list">
+    <h2>{{title}}</h2>
+    {# Loop through ALL posts in the 'posts' collection #}
+    {% for post in collections.posts | reverse %} {# Use reverse to show newest first #}
+        <li>
+            <a href="{{ post.url }}">{{ post.data.title }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{# Remove pagination navigation since we're not paginating #}
