@@ -1,44 +1,44 @@
-const { EleventyHtmlBasePlugin } = require("@11ty/eleventy");
-const { DateTime } = require("luxon");
-const markdownIt = require("markdown-it");
-const markdownItAttrs = require("markdown-it-attrs");
+module.exports = async function(eleventyConfig) {
+  // Use dynamic import to load Eleventy plugins
+  const { EleventyHtmlBasePlugin } = await import("@11ty/eleventy");
+  const { DateTime } = await import("luxon");
+  const markdownItModule = await import("markdown-it");
+  const markdownItAttrsModule = await import("markdown-it-attrs");
 
-module.exports = function (eleventyConfig) {
-    eleventyConfig.addPassthroughCopy("src/css");
-    eleventyConfig.addPassthroughCopy("src/assets");
+  const markdownIt = markdownItModule.default;
+  const markdownItAttrs = markdownItAttrsModule.default;
 
-    // Add a plugin to handle base paths (useful for subdirectories on servers)
-    eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
+  eleventyConfig.addPassthroughCopy("src/css");
+  eleventyConfig.addPassthroughCopy("src/assets");
 
-    // Add a filter to format dates for HTML datetime attribute
-    eleventyConfig.addFilter("htmlDateString", (dateObj) => {
-        return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toFormat('yyyy-LL-dd');
-    });
+  eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
 
-    // Add a filter to format dates for human readability
-    eleventyConfig.addFilter("readableDate", (dateObj) => {
-        return DateTime.fromJSDate(dateObj, { zone: 'utc' }).toFormat('dd LLL yyyy');
-    });
+  eleventyConfig.addFilter("htmlDateString", (dateObj) => {
+    return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat("yyyy-LL-dd");
+  });
 
-    eleventyConfig.addFilter("truncate", function (text, length, killwords, end) {
-        if (text && text.length > length) { // Added null/undefined check for 'text'
-            text = text.substring(0, length);
-            if (killwords) {
-                text = text.substring(0, text.lastIndexOf(' '));
-            }
-            text += (end != null) ? end : '...';
-        }
-        return text;
-    });
+  eleventyConfig.addFilter("readableDate", (dateObj) => {
+    return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat("dd LLL yyyy");
+  });
 
-    const md = markdownIt({ html: true }).use(markdownItAttrs);
+  eleventyConfig.addFilter("truncate", function (text, length, killwords, end) {
+    if (text && text.length > length) {
+      text = text.substring(0, length);
+      if (killwords) {
+        text = text.substring(0, text.lastIndexOf(" "));
+      }
+      text += end != null ? end : "...";
+    }
+    return text;
+  });
 
-    eleventyConfig.setLibrary("md", md);
+  const md = markdownIt({ html: true }).use(markdownItAttrs);
+  eleventyConfig.setLibrary("md", md);
 
-    return {
-        dir: {
-            input: "src",
-            output: "_site",
-        },
-    };
+  return {
+    dir: {
+      input: "src",
+      output: "_site",
+    },
+  };
 };
