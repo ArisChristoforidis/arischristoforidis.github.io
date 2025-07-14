@@ -35,6 +35,14 @@ jobs:
       - run: npm install
       - run: npm run build-ghpages
 
+      - name: Debug safe listing
+        run: |
+          if [ -d "_site" ]; then
+            ls -la _site
+          else
+            echo "_site folder does not exist"
+          fi
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
