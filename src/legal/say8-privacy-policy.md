@@ -2,7 +2,7 @@
 layout: "post.njk"
 title: "Privacy Policy for Say 8"
 author: "Aristeidis Christoforidis"
-date: 2026-1-27
+date: 2026-01-27
 tags: ["legal"]
 ---
 
