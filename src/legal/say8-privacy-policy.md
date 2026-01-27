@@ -14,11 +14,11 @@ This Privacy Policy explains how Aristeidis Christoforidis (the "Developer," "we
 
 ## 1. Information Processed
 
-The Developer of Synoche is committed to minimizing data collection. We do not require account registration, and we do not collect typical Personal Identifiable Information (PII) such as names, email addresses, or payment information.
+The Developer of Say 8 is committed to minimizing data collection. We do not require account registration, and we do not collect typical Personal Identifiable Information (PII) such as names, email addresses, or payment information.
 
 ### A. Public Data & Game Functionality
 
-The core function of Synoche relies on processing information that you have already made public on Reddit:
+The core function of Say 8 relies on processing information that you have already made public on Reddit:
 
 - **Reddit Username:** Your Reddit username is automatically processed when you intentionally submit a score or create a level by posting a comment or a thread title according to the game's rules. This is necessary to attribute scores and creations to you within the public context of the game.
 - **User Content:** Questions and answers for quizzes you create are stored and made public on Reddit.
