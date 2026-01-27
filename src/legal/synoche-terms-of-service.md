@@ -18,7 +18,8 @@ By submitting a score, creating a level, or otherwise interacting with Synoche, 
 ## 2. The Service (Synoche)
 
 Synoche is a free, Reddit-based game that processes public user interactions (posts and comments) to track scores and generate game levels.
-Changes to the Service: We reserve the right to modify or discontinue the App, temporarily or permanently, with or without notice. We are not liable to you or any third party for any modification, suspension, or discontinuance of the Service.
+
+__Changes to the Service:__ We reserve the right to modify or discontinue the App, temporarily or permanently, with or without notice. We are not liable to you or any third party for any modification, suspension, or discontinuance of the Service.
 
 ## 3. User Content and License Grant
 "User Content" includes any information you provide or submit to the App, specifically your Reddit posts and comments used to submit scores or define levels.
