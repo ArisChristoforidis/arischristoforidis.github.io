@@ -6,8 +6,6 @@ date: 2026-01-27
 tags: ["legal"]
 ---
 
-# Privacy Policy for Say 8
-
 **Last Updated:** January 27, 2026
 
 This Privacy Policy explains how Aristeidis Christoforidis (the "Developer," "we," "us," or "our") handles information when you use the game Say 8 (the "App") which is hosted on the Reddit platform. By interacting with the App's mechanisms on Reddit, you agree to the terms of this Privacy Policy. If you do not agree, please do not engage with the App.

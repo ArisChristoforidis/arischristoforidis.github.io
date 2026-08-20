@@ -1,9 +1,10 @@
 ---
 title: 👋 Hey, I'm Aris
+description: "The personal website of Aris Christoforidis: software, photographs, notes, and side projects."
 layout: base.njk
 ---
 
-## 👋 Hey, I'm Aris
+# 👋 Hey, I'm Aris
 
 I am a Software Engineer based in Thessaloniki, Greece.
 I got my BS in __Applied Informatics__ and MS in __Artificial Intelligence and Data Analytics__ from the University of Macedonia.

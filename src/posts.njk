@@ -1,17 +1,25 @@
 ---
 layout: "base.njk"
-title: "Posts"
-permalink: "/posts/index.html" # Defines the URL for this page
+title: "Notes"
+description: "Notes, experiments, and occasional writing by Aris Christoforidis."
+permalink: "/posts/index.html"
 ---
 
-<ul class="item-list">
-    <h2>{{title}}</h2>
-    {# Loop through ALL posts in the 'posts' collection #}
-    {% for post in collections.posts | reverse %} {# Use reverse to show newest first #}
+<section class="item-list">
+  <h1>{{ title }}</h1>
+  {% if collections.posts | length %}
+    <ul>
+      {% for post in collections.posts | reverse %}
         <li>
-            <a href="{{ post.url }}">{{ post.data.title }}</a>
+          <a class="item-link" href="{{ post.url }}">
+            <span class="item-title">{{ post.data.title }}</span>
+            {% if post.data.summary %}<span class="item-summary">{{ post.data.summary }}</span>{% endif %}
+            {% if post.data.date %}<time class="item-meta" datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate }}</time>{% endif %}
+          </a>
         </li>
-    {% endfor %}
-</ul>
-
-{# Remove pagination navigation since we're not paginating #}
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="item-empty">Notes are still forming.</p>
+  {% endif %}
+</section>

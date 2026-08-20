@@ -1,19 +1,23 @@
 ---
-layout: "base.njk" # This layout extends the base layout
+layout: "base.njk"
 ---
 
-<div>
-    <h2>{{ title }}</h2>
+<article class="article">
+  <header class="article-header">
+    <p class="eyebrow">project</p>
+    <h1>{{ title }}</h1>
+    {% if date %}<time class="post-meta" datetime="{{ date | htmlDateString }}">{{ date | readableDate }}</time>{% endif %}
 
-    {% if tags %}
-    <div class="post-tags">
-        {% for tag in categories %}
-        <span class="post-tag">{{ tag }}</span>{% if not loop.last %} {% endif %}
-        {% endfor %}
+    {% if categories %}
+    <div class="post-tags" aria-label="Categories">
+      {% for category in categories %}
+        <span class="post-tag">{{ category }}</span>
+      {% endfor %}
     </div>
     {% endif %}
+  </header>
 
-    <div class="post-content">
-        {{ content | safe }}
-    </div>
-</div>
+  <div class="post-content">
+    {{ content | safe }}
+  </div>
+</article>

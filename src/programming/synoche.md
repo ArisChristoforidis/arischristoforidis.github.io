@@ -1,13 +1,14 @@
 ---
 layout: "prog.njk"
 title: "🔗 Synoche"
+summary: "A word-association puzzle game built during a hackathon."
 author: "Aris Christoforidis"
 date: 2025-06-30
 tags: ["programming"]
 categories: ["hackathons", "games"]
 ---
 
-![Banner](/assets/synoche/title_static_blue.png)
+![Synoche title graphic](/assets/synoche/title_static_blue.png)
 
 ## Links
 
@@ -27,13 +28,13 @@ I used Devvit with React Webviews inside Bolt, guiding the LLM to write and refi
 
 ## Screenshots
 
-![Banner](/assets/synoche/1.png){data-lightbox="gallery"}
+![Synoche gameplay screenshot](/assets/synoche/1.png)
 
-![Banner](/assets/synoche/2.png){data-lightbox="gallery"}
+![Synoche gameplay screenshot](/assets/synoche/2.png)
 
-![Banner](/assets/synoche/6.png){data-lightbox="gallery"}
+![Synoche puzzle editor screenshot](/assets/synoche/6.png)
 
-![Banner](/assets/synoche/7.png){data-lightbox="gallery"}
+![Synoche gameplay screenshot](/assets/synoche/7.png)
 
 
 

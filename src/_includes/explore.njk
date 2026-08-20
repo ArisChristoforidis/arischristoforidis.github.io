@@ -2,9 +2,12 @@
 layout: "base.njk"
 ---
 
-<div>
-    <h2>{{ title }}</h2>
-    <div class="post-content">
-        {{ content | safe }}
-    </div>
-</div>
+<article class="explore-page">
+  <header class="article-header">
+    <p class="eyebrow">outside the terminal</p>
+    <h1>{{ title }}</h1>
+  </header>
+  <div class="post-content">
+    {{ content | safe }}
+  </div>
+</article>

@@ -4,8 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "eleventy --serve",
-    "build-ghpages": "npx @11ty/eleventy"
+    "dev": "eleventy --serve",
+    "start": "npm run dev",
+    "clean": "node scripts/clean-site.js",
+    "build": "npm run clean && eleventy",
+    "check": "npm run build",
+    "build-ghpages": "npm run build",
+    "new:post": "powershell -ExecutionPolicy Bypass -File scripts/new-post.ps1"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +22,7 @@
   "dependencies": {
     "luxon": "^3.6.1",
     "markdown-it": "^14.1.0",
-    "markdown-it-attrs": "^4.3.1"
+    "markdown-it-attrs": "^4.3.1",
+    "shiki": "^4.4.3"
   }
 }

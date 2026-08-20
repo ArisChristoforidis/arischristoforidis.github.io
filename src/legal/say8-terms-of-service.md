@@ -6,8 +6,6 @@ date: 2026-01-27
 tags: ["legal"]
 ---
 
-# Terms of Service for Say 8
-
 **Last Updated:** January 27, 2026
 
 Welcome to __Say 8__ (the "App"), a quiz game hosted on the Reddit platform and operated by __Aristeidis Christoforidis__ (the "Developer," "we," "us," or "our").
