@@ -1,0 +1,61 @@
+{
+  "isDemo": true,
+  "updatedAt": "20 Aug 2026 · 08:00 UTC",
+  "rangeLabel": "21 Jul — 19 Aug 2026",
+  "metrics": {
+    "visits": "1,842",
+    "pageviews": "2,934"
+  },
+  "daily": [
+    {"date": "21 Jul", "visits": 38, "height": 30},
+    {"date": "22 Jul", "visits": 44, "height": 35},
+    {"date": "23 Jul", "visits": 52, "height": 41},
+    {"date": "24 Jul", "visits": 47, "height": 37},
+    {"date": "25 Jul", "visits": 33, "height": 26},
+    {"date": "26 Jul", "visits": 29, "height": 23},
+    {"date": "27 Jul", "visits": 56, "height": 44},
+    {"date": "28 Jul", "visits": 61, "height": 48},
+    {"date": "29 Jul", "visits": 58, "height": 46},
+    {"date": "30 Jul", "visits": 72, "height": 57},
+    {"date": "31 Jul", "visits": 69, "height": 55},
+    {"date": "01 Aug", "visits": 43, "height": 34},
+    {"date": "02 Aug", "visits": 37, "height": 29},
+    {"date": "03 Aug", "visits": 76, "height": 60},
+    {"date": "04 Aug", "visits": 84, "height": 67},
+    {"date": "05 Aug", "visits": 79, "height": 63},
+    {"date": "06 Aug", "visits": 92, "height": 73},
+    {"date": "07 Aug", "visits": 88, "height": 70},
+    {"date": "08 Aug", "visits": 51, "height": 40},
+    {"date": "09 Aug", "visits": 48, "height": 38},
+    {"date": "10 Aug", "visits": 97, "height": 77},
+    {"date": "11 Aug", "visits": 105, "height": 83},
+    {"date": "12 Aug", "visits": 113, "height": 90},
+    {"date": "13 Aug", "visits": 126, "height": 100},
+    {"date": "14 Aug", "visits": 108, "height": 86},
+    {"date": "15 Aug", "visits": 62, "height": 49},
+    {"date": "16 Aug", "visits": 55, "height": 44},
+    {"date": "17 Aug", "visits": 91, "height": 72},
+    {"date": "18 Aug", "visits": 102, "height": 81},
+    {"date": "19 Aug", "visits": 118, "height": 94}
+  ],
+  "pages": [
+    {"path": "/programming/synoche/", "label": "Synoche", "visits": "436", "share": 74},
+    {"path": "/", "label": "Home", "visits": "318", "share": 54},
+    {"path": "/explore/messier/", "label": "The Messier Run", "visits": "207", "share": 35},
+    {"path": "/posts/tensor-puzzles-srush/", "label": "Tensor Puzzles", "visits": "164", "share": 28}
+  ],
+  "countries": [
+    {"code": "US", "label": "United States", "visits": 28},
+    {"code": "GB", "label": "United Kingdom", "visits": 19},
+    {"code": "DE", "label": "Germany", "visits": 17},
+    {"code": "FR", "label": "France", "visits": 15},
+    {"code": "GR", "label": "Greece", "visits": 14},
+    {"code": "IN", "label": "India", "visits": 11}
+  ],
+  "sources": [
+    {"label": "Direct / unknown", "share": 58},
+    {"label": "Search", "share": 23},
+    {"label": "GitHub", "share": 12},
+    {"label": "Other referrals", "share": 7}
+  ]
+}

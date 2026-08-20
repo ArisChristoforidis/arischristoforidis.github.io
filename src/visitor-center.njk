@@ -1,0 +1,91 @@
+---
+title: Signals
+description: "A playful terminal-style signals room for christoforidis.dev."
+layout: visitor-center.njk
+permalink: "/signals/index.html"
+---
+
+<div class="terminal-shell">
+  <h1 class="terminal-sr-only">Signals</h1>
+
+  <section class="terminal-command-console" aria-label="Signals command console">
+    <form id="visitor-console-form" class="terminal-console-form">
+      <label class="terminal-sr-only" for="visitor-command">Enter a signals command</label>
+      <span aria-hidden="true">console@site:~$</span>
+      <input id="visitor-command" name="command" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="help for commands">
+      <button class="terminal-console-submit" type="submit">[ENTER]</button>
+    </form>
+  </section>
+
+  <div id="visitor-console-output" class="terminal-console-output" aria-live="polite"></div>
+
+  <section id="visitor-view-traffic" data-visitor-view="traffic" class="terminal-block" aria-labelledby="pulse-title" hidden>
+    <div class="terminal-block-heading"><span id="pulse-title">traffic --range=30d</span><span>{{ analytics.rangeLabel }}</span></div>
+    <div class="terminal-readings terminal-traffic-readings">
+      <div class="terminal-reading">
+        <span class="terminal-reading-label">INCOMING SIGNALS</span>
+        <strong>{{ analytics.metrics.visits }}</strong>
+        <span>visits / last 30 days</span>
+      </div>
+      <div class="terminal-reading">
+        <span class="terminal-reading-label">PAGE REQUESTS</span>
+        <strong>{{ analytics.metrics.pageviews }}</strong>
+        <span>all reads / last 30 days</span>
+      </div>
+      <div class="terminal-country-map-panel" aria-labelledby="country-map-title">
+        <div class="terminal-country-map-heading"><span id="country-map-title">country signals</span><span>visits</span></div>
+        <div class="terminal-country-grid" aria-label="Visits by country">
+          {% for country in analytics.countries %}
+            <div class="terminal-country-cell"><span>{{ country.code }}</span><strong>{{ country.visits }}</strong></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="terminal-traffic-detail-grid">
+      <div class="terminal-traffic-chart">
+        <div class="terminal-chart" role="img" aria-label="Daily visits for the past 30 days">
+          <div class="terminal-chart-y-axis" aria-hidden="true"><span>MAX</span><span>---</span><span>---</span><span>---</span><span>MIN</span></div>
+          <div class="terminal-chart-main">
+            <div class="terminal-chart-grid" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+            <div class="terminal-chart-bars" aria-hidden="true">
+              {% for point in analytics.daily %}
+                <div class="terminal-chart-day" style="--bar-height: {{ point.height }}%;" data-tooltip="{{ point.date }} / {{ point.visits }} visits"><span></span></div>
+              {% endfor %}
+            </div>
+            <div class="terminal-chart-axis" aria-hidden="true"><span>21 JUL</span><span>28 JUL</span><span>04 AUG</span><span>11 AUG</span><span>19 AUG</span></div>
+          </div>
+        </div>
+        <ul class="terminal-sr-only">
+          {% for point in analytics.daily %}<li>{{ point.date }}: {{ point.visits }} visits</li>{% endfor %}
+        </ul>
+      </div>
+      <div class="terminal-traffic-origins">
+        <div class="terminal-traffic-subheading"><span>origins</span><span>SHARES</span></div>
+        <ul class="terminal-list terminal-source-list">
+          {% for source in analytics.sources %}
+            <li>
+              <div><span class="terminal-list-name">{{ source.label }}</span><strong>{{ source.share }}%</strong></div>
+              <span class="terminal-progress" aria-hidden="true"><span style="width: {{ source.share }}%;"></span></span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="visitor-view-pages" data-visitor-view="pages" class="terminal-block" aria-labelledby="paths-title" hidden>
+    <div class="terminal-block-heading"><span id="paths-title">top-paths</span><span>TOP 04</span></div>
+    <ol class="terminal-list terminal-page-list">
+      {% for page in analytics.pages %}
+        <li>
+          <span class="terminal-list-index">0{{ loop.index }}</span>
+          <span class="terminal-list-name">{{ page.label }}</span>
+          <strong>{{ page.visits }}</strong>
+          <code>{{ page.path }}</code>
+          <span class="terminal-progress" aria-hidden="true"><span style="width: {{ page.share }}%;"></span></span>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+</div>
