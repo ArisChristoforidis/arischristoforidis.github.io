@@ -3,7 +3,7 @@ title: "The Messier Run"
 description: "A field log for photographing the Messier catalog with a Sony a6700 and Sigma 18-50mm lens."
 layout: "base.njk"
 pageClass: "messier-page"
-permalink: "/messier/index.html"
+permalink: "/explore/messier/index.html"
 ---
 
 astrophotography / field log 01
