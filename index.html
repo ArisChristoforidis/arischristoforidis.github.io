@@ -1,30 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>👋 Hey, I&#39;m Aris</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+  <meta name="description" content="The personal website of Aris Christoforidis: software, photographs, notes, and side projects.">
+  <meta name="theme-color" content="#f3f0e9">
+  <title>👋 Hey, I&#39;m Aris · christoforidis.dev</title>
+
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (_) {
+        // Use the system preference when storage is unavailable.
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/image-viewer.js"></script>
 </head>
 <body>
-  <div class="navbar">
-    <div class="navbar-content">
-      <a class="navbar-name" href="/">christoforidis.dev</a>
-      
-        <nav class="navbar-links">
-            <ul>
-                <li><a href="/programming/">programming</a></li>
-                <!-- <li><a href="/resume/">resume</a></li>
-                <li><a href="/explore/">explore</a></li>
-                <li><a href="/posts/">posts</a></li> -->
-            </ul>
-        </nav>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-nav">
+      <a class="site-name" href="/" aria-label="christoforidis.dev home">christoforidis.dev</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/programming/">projects</a></li>
+          <li><a href="/posts/">notes</a></li>
+          <li><a href="/explore/">explore</a></li>
+        </ul>
+      </nav>
+
     </div>
-  </div>
-  <main>
-    <h2>👋 Hey, I'm Aris</h2>
+  </header>
+
+  <main id="main-content">
+    <h1>👋 Hey, I'm Aris</h1>
 <p>I am a Software Engineer based in Thessaloniki, Greece.
 I got my BS in <strong>Applied Informatics</strong> and MS in <strong>Artificial Intelligence and Data Analytics</strong> from the University of Macedonia.</p>
 <p>My professional interests lie primarily in Machine Learning, with a specific focus on ML optimization. However, I enjoy working on a broad range of projects related to ML and data science. In my spare time, I also enjoy building full-stack apps and making (small) games.</p>
@@ -42,5 +60,27 @@ I got my BS in <strong>Applied Informatics</strong> and MS in <strong>Artificial
 </ul>
 
   </main>
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer">
+    <figure class="image-viewer-figure">
+      <div class="image-viewer-frame">
+        <img data-image-preview alt="">
+      </div>
+      <figcaption data-image-caption></figcaption>
+    </figure>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Aris Christoforidis</span>
+      <span class="footer-links">
+        <a href="mailto:contact.arisc@gmail.com">email</a>
+        <a href="https://github.com/ArisChristoforidis">github</a>
+      </span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span>theme</span>
+      </button>
+    </div>
+  </footer>
 </body>
 </html>

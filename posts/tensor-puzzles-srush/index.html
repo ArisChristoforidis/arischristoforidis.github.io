@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The personal website of Aris Christoforidis.">
+  <meta name="theme-color" content="#f3f0e9">
+  <title>Tensor Puzzles (SRush) · christoforidis.dev</title>
+
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (_) {
+        // Use the system preference when storage is unavailable.
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/image-viewer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-nav">
+      <a class="site-name" href="/" aria-label="christoforidis.dev home">christoforidis.dev</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/programming/">projects</a></li>
+          <li><a href="/posts/">notes</a></li>
+          <li><a href="/explore/">explore</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="main-content">
+    
+<article class="article">
+  <header class="article-header">
+    <p class="eyebrow">note</p>
+    <h1>Tensor Puzzles (SRush)</h1>
+    <time class="post-meta" datetime="2026-08-20">20 Aug 2026</time>
+  </header>
+  <div class="post-content">
+    <h2>Introduction</h2>
+<p><a href="https://github.com/srush/tensor-puzzles">Sasha Rush's Tensor Puzzles</a> are a set of exercises that aim to help you practice tensor operations, mainly broadcasting. “While solving them, you must follow five rules:</p>
+<ol>
+<li>These puzzles are about broadcasting.</li>
+<li>Each puzzle needs to be solved in 1 line (&lt;80 columns) of code.</li>
+<li>You are allowed @, arithmetic, comparison, <code>shape</code>, any indexing (e.g. <code>a[:j], a[:, None], a[arange(10)]</code>), and previous puzzle functions.</li>
+<li>You are <em>not allowed</em> anything else. No <code>view</code>, <code>sum</code>, <code>take</code>, <code>squeeze</code>, <code>tensor</code>.</li>
+<li>You can start with these two functions:</li>
+</ol>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> arange</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">):</span></span>
+<span class="line"><span style="color:#032F62;--shiki-dark:#9ECBFF">    "Use this function to replace a for-loop."</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> torch.tensor(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">range</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> where</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(q, a, b):</span></span>
+<span class="line"><span style="color:#032F62;--shiki-dark:#9ECBFF">    "Use this function to replace an if-statement."</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (q </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a) </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#D73A49;--shiki-dark:#F97583">~</span><span style="color:#24292E;--shiki-dark:#E1E4E8">q) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> b</span></span>
+<span class="line"></span></code></pre>
+<p>I have three additional pieces of advice from solving them:</p>
+<ul>
+<li>Make sure you understand the fundamentals of tensor broadcasting.</li>
+<li>Try to think about the vector and matrix shapes. It especially helps to work backwards from the desired output shape and figure out how you can produce it with what you have.</li>
+<li>Use <code>print</code> to see what you are doing - pretty obvious but worth mentioning.</li>
+</ul>
+<p>You can attempt to solve them in the <a href="https://colab.research.google.com/github/srush/Tensor-Puzzles/blob/main/Tensor%20Puzzlers.ipynb">provided notebook</a>.</p>
+<h2>Puzzle 1</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.ones.html">ones</a> - the vector of all ones.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>i   = 4</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 1, 1, 1] # length i</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The main challenge of this problem is finding a way to initialize a tensor array of the correct size. Since we don't have much to work with, I used <code>arange(i)</code>, subtracted it from itself, and added 1:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> ones</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 2</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.sum.html">sum</a> - the sum of a vector.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [ 1, 2, 3, 5] # shape (i,)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [11] # shape (1,)</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>This puzzle aims to introduce explicit broadcasting to us. In order to add the elements, we will need to perform matrix multiplication using <code>@</code> (between <code>a</code> acting as a row and a vector of 1s acting as a column) , but we can't do it right away as we are currently dealing with vectors. We want <code>out</code> to be of shape <code>(1,)</code> so we need to broadcast our input vectors to shapes <code>(1, i)</code> and <code>(i, 1)</code> - the inner dimension will collapse and leave us with the desired shape. Here is how this is done:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> sum</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :] </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ones(a.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<blockquote>
+<p><strong>Note</strong>: We didn't need to explicitly broadcast the <code>ones</code> vector, as it is done implicitly for us, since we broadcast <code>a</code> explicitly.</p>
+</blockquote>
+<h2>Puzzle 3</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.outer.html">outer</a> - the outer product of two vectors.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [a0, a1, a2] # shape (i,)</span></span>
+<span class="line"><span>b   = [b0, b1] # shape (j,)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [a0 * b0, a0 * b1] # shape (i, j)</span></span>
+<span class="line"><span>      [a1 * b0, a1 * b1]</span></span>
+<span class="line"><span>      [a2 * b0, a2 * b1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>In practice, we want an <code>(i, j)</code> matrix multiplying every element of <code>a</code> with every element of <code>b</code>. To achieve this, we will be broadcasting <code>a</code> to a <code>(i, 1)</code> shape and <code>b</code> to a <code>(1, j)</code> shape - and multiplying them to get the correct output shape:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> outer</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], b: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> b[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :]</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 4</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.diag.html">diag</a> - the diagonal vector of a square matrix.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [1, 2, 3] # shape (i, i)</span></span>
+<span class="line"><span>      [4, 5, 6]</span></span>
+<span class="line"><span>      [7, 8, 9]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 5, 9] # shape (i,)</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>For this one, all we have to do is directly index the diagonal elements, which we can do by utilizing <code>arange(i)</code>:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> diag</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(a.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]), arange(a.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])]</span></span>
+<span class="line"></span></code></pre>
+<p>By doing this, <code>arange</code> will create 2 vectors, one for the rows and one for the columns, that look like this: <code>[0, 1, ..., i-1]</code> which correspond to a list of index pairs <code>(0,0), (1, 1), ..., (i-1, i-1)</code> and pick out the elements we care about.</p>
+<h2>Puzzle 5</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.eye.html">eye</a> - the identity matrix.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>j   = 3</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 0, 0]</span></span>
+<span class="line"><span>      [0, 1, 0]</span></span>
+<span class="line"><span>      [0, 0, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We want to create a 2D array with shape <code>(j, j)</code> where every element on the diagonal is 1. We can use <code>where</code>, comparing 2 <code>arange(j)</code>, one broadcast as a row and one as a column, to implicitly form a 2D matrix. The cells where the indexes of the 2 vectors match will be our diagonal, and may be set to 1. All other cells get 0.</p>
+<p>Let's look at how the comparison works:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">arange(j)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :]</span></span>
+<span class="line"></span></code></pre>
+<p>This snippet creates our matrix. Here is what happens under the hood:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>row_vector = [0, 1, 2] # shape (1, j)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>col_vector = [0] # shape (j, 1)</span></span>
+<span class="line"><span>             [1]</span></span>
+<span class="line"><span>             [2]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>When we compare with <code>==</code> the two vectors get broadcast together, forming two <code>(j, j)</code> shaped matrices where we can compare values elementwise:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>row_matrix = [0, 1, 2]</span></span>
+<span class="line"><span>             [0, 1, 2]</span></span>
+<span class="line"><span>             [0, 1, 2]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>col_matrix = [0, 0, 0]</span></span>
+<span class="line"><span>             [1, 1, 1]</span></span>
+<span class="line"><span>             [2, 2, 2]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>All we have to do is place 1s wherever the values of the 2 matrices match:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> eye</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(arange(j)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :], </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<p>In fact, we can just remove the <code>where</code> altogether. The boolean matrix can be converted into 1s and 0s by multiplying with 1.</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> eye</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (arange(j)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :]) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 6</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.triu.html">triu</a> - the upper triangular matrix.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>j   = 3</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 1, 1]</span></span>
+<span class="line"><span>      [0, 1, 1]</span></span>
+<span class="line"><span>      [0, 0, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>This problem is almost identical to the previous one. We just need to change the comparison from <code>==</code> to <code>&lt;=</code> to account for the extra cells we want to place 1s to. Those are basically the cells where the row index is smaller or equal to the column index:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> triu</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (arange(j)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">&#x3C;=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :]) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 7</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.cumsum.html">cumsum</a> - the cumulative sum.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [-1, 3, 0, -5]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [-1, 2, 2, -3]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>For this puzzle, we have to calculate the cumulative sum, so for <code>out[k]</code> we need to sum <code>a[0] + a[1] + ... + a[k]</code>. We are going to make use of the <code>triu</code> function we built in the previous puzzle. If we make a <code>(i, i)</code> shaped <code>triu</code> matrix, the element <code>[k, j]</code> will have the value of 1 if <code>out[j]</code> needs <code>a[k]</code> in its summary calculation, else it will be 0. If we do matrix multiplication between this table and <code>a</code>, we will have solved the puzzle:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> cumsum</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> triu(a.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<p>You can visualize this for our example above as follows:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a    = [-1, 3, 0, -5] # shape (i,)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>triu = [1, 1, 1, 1] # shape (i, i)</span></span>
+<span class="line"><span>       [0, 1, 1, 1]</span></span>
+<span class="line"><span>       [0, 0, 1, 1]</span></span>
+<span class="line"><span>       [0, 0, 0, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>When doing matrix multiplication, the inner dimensions must match, so a will be broadcast to <code>(1, i)</code>. Our output shape will therefore be <code>(1, i)</code> (which will be implicitly converted back to <code>(i,)</code>). The math will look like this:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span># General form</span></span>
+<span class="line"><span>out[k] = a[0] * triu[0, k] + a[1] * triu[1, k] + ... + a[k] * triu[i-1, k]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out[0] = a[0] * triu[0, 0] + a[1] * triu[1, 0] + a[2] * triu[2, 0] + a[3] * triu[3, 0] = -1 * 1 + 3 * 0 + 0 * 0 + -5 * 0 = -1</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out[1] = a[0] * triu[0, 1] + a[1] * triu[1, 1] + a[2] * triu[2, 1] + a[3] * triu[3, 1] = -1 * 1 + 3 * 1 + 0 * 0 + -5 * 0 = 2</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out[2] = a[0] * triu[0, 2] + a[1] * triu[1, 2] + a[2] * triu[2, 2] + a[3] * triu[3, 2] = -1 * 1 + 3 * 1 + 0 * 1 + -5 * 0 = 2</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out[3] = a[0] * triu[0, 3] + a[1] * triu[1, 3] + a[2] * triu[2, 3] + a[3] * triu[3, 3] = -1 * 1 + 3 * 1 + 0 * 1 + -5 * 1 = -3</span></span>
+<span class="line"><span></span></span></code></pre>
+<blockquote>
+<p><strong>Note</strong>: There is a very subtle problem in this puzzle, if you decide to broadcast <code>a</code> explicitly: if you broadcast <code>a</code> to <code>(1, i)</code> manually, the <code>run_test</code> function will break because the final result from the matrix multiplication will not be converted back to shape <code>(i,)</code> and you will get a <code>RuntimeError</code>.</p>
+</blockquote>
+<h2>Puzzle 8</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.diff.html">diff</a> - the running difference.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [-5, 4, 2, -4]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [-5, 9, -2, -6]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>For every element <code>a[i]</code>, <code>out[i]</code> will be equal to <code>a[i] - a[i-1]</code>. One special case is <code>out[0]</code> which is always equal to <code>a[0]</code> since there is no previous element. We can perform the base case by creating a vector of the <code>diff</code> results using <code>arange(i) - 1</code> to index <code>a</code> to &quot;look back&quot; one element:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">diff </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#6A737D;--shiki-dark:#6A737D"># this will do a[i] - a[i-1]</span></span>
+<span class="line"></span></code></pre>
+<p>This will correctly calculate the differences between adjacent elements for all but the first element:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">a </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> [</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">5</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">a[arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">3</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[[</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> [</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">5</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">diff </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> [</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">5</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> [</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">5</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">4</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> [</span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">9</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF">6</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"></span></code></pre>
+<p>In that case, it will attempt to do <code>a[0] - a[-1]</code> which will fetch the last element. Thankfully, we have <code>where</code> to take care of the special case. We can use <code>arange</code> as a control vector and separate the first element:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> diff</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, a </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], a[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 9</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.vstack.html"><code>vstack</code></a> - the matrix of two vectors.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [1, 2, 3] # shape (i, )</span></span>
+<span class="line"><span>b   = [4, 5, 6] # shape (i, )</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 2, 3] # shape (2, i)</span></span>
+<span class="line"><span>      [4, 5, 6]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The target for this puzzle is to place the 2 vectors together in an array with shape <code>(2, i)</code>.</p>
+<p>Looking at the output spec, we need a <code>out</code> shape of <code>(2, i)</code>. One direct approach is to repeat each vector across two rows using <code>outer</code> and <code>ones</code>:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">outer(ones(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">), a)</span></span>
+<span class="line"></span></code></pre>
+<p>This duplicates the vector along two rows, exactly what we want. Doing this for both vectors gave me two <code>(2, i)</code> matrices. To combine them, a boolean mask using <code>arange(2)[:, None]</code> lets us select row 0 from <code>a</code> and row 1 from <code>b</code>:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> vstack</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], b: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(arange(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, outer(ones(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">), b), outer(ones(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">), a))</span></span>
+<span class="line"></span></code></pre>
+<p>This works, but it constructs two full matrices only to select one row from each. Since <code>arange(2)[:, None]</code> already has shape <code>(2, 1)</code>, passing simple 2D row vectors of shape <code>(1, i)</code> causes <code>where</code> to expand them along the vertical axis for us. Stripping out the <code>outer(ones(...))</code> calls leaves a much cleaner, more idiomatic solution:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> vstack</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], b: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(arange(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, b[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :], a[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :])</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 10</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.roll.html"><code>roll</code></a> - the vector shifted 1 circular position.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [1, 2, 3, 4, 5]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [2, 3, 4, 5, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We could build a conditional mask using <code>where</code> and <code>arange</code> (similar to the <code>diff</code> puzzle), but that feels overly complex and would quickly push against line length limits.</p>
+<p>Using pure <code>arange</code> indexing, it's easy to shift elements, but my first attempt shifted them in the wrong direction:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> roll</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># Example Input:</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># a =   [-2, -4, -2, 3, 1]</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># Output:</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># out = [1, -2, -4, -2, 3] # wrong, shifted right</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># Desired Output:</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># out = [-4, -2, 3, 1, -2] # correct, but not what we do above</span></span>
+<span class="line"></span></code></pre>
+<p>To roll to the left, we need to add <code>1</code> to shift forward (<code>0</code> grabs index <code>1</code>, <code>1</code> grabs index <code>2</code>, etc.). The trick for cyclic shifting is the modulo operator (<code>%</code>), which cleanly wraps the final index back around to <code>0</code> without running out of bounds or needing conditional logic:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> roll</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[(arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">%</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i]</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 11</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.flip.html"><code>flip</code></a> - the reversed vector.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [1, 2, 3, 4, 5]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [5, 4, 3, 2, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>In standard NumPy, this would be a trivial <code>a[::-1]</code>. However, PyTorch doesn't allow negative step sizes in basic slicing within these puzzle constraints.</p>
+<p>If we map out the index transformation we actually need, the pattern becomes clear:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>input index sequence:    0,   1, ..., i-2, i-1</span></span>
+<span class="line"><span>output index sequence: i-1, i-2, ...,   1,   0</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We can construct this reversed sequence directly using <code>arange(i)</code> arithmetic:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> flip</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[i </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]</span></span>
+<span class="line"></span></code></pre>
+<p>Subtracting <code>arange(i)</code> from <code>i</code> flips the direction to decreasing (<code>i, i-1, ..., 1</code>), and subtracting <code>1</code> adjusts it back to zero-based indexing (<code>i-1, i-2, ..., 0</code>).</p>
+<h2>Puzzle 12</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.compress.html"><code>compress</code></a> - keep only masked entries (left-aligned).</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>v      = [   1,    2,     3,    4,     5]</span></span>
+<span class="line"><span>g      = [True, True, False, True, False]</span></span>
+<span class="line"><span>out    = [   1,    2,     4,    0,     0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We basically want to take a vector <code>v</code> and a boolean mask <code>g</code>, keep only the values where <code>g</code> is <code>True</code>, pack them tightly to the left, and pad the rest with zeros. The difficult aspect of this problem is figuring out how to facilitate the &quot;packing&quot; procedure, which can be abstracted as &quot;an operation that moves an element of the input array to a new index in the output array&quot;</p>
+<h3>Figuring out where items go</h3>
+<p>The items that have a <code>True</code> value at <code>g</code> should be &quot;packed&quot; to the left, i.e. placed at the start of the <code>out</code> vector. This means that each of these items will have sequential indexes in the output vector - which we need to find. This can be achieved with <code>cumsum</code>. Multiplying it by 1 can turn the <code>bool</code> vector into a vector of integers (<code>True</code> becomes 1, <code>False</code> becomes 0):</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>g             = [ True, True, False, True, False]</span></span>
+<span class="line"><span>g * 1         = [    1,    1,     0,    1,     0]</span></span>
+<span class="line"><span>cumsum(g * 1) = [    1,    2,     2,    3,     3]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>This works nicely, but it has a side effect: False elements also get a destination index value. We can clean these up by multiplying the <code>cumsum</code> by <code>g * 1</code> again:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>cumsum(g * 1)         = [    1,    2,     2,    3,     3]</span></span>
+<span class="line"><span>cumsum(g * 1) * g * 1 = [    1,    2,     0,    3,     0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The <code>False</code> values turn to 0s which cleans up the extra indexes. Of course the indexes are 1-based and 0 signifies that we mean to discard the element, but we will be able to easily deal with this later.</p>
+<h3>Moving elements around</h3>
+<p>The previous section identifies the destination of each selected value. The remaining question is how to move those values into <code>out</code>. We can use a matrix A with shape <code>(i, i)</code> to move each value to its destination. To move <code>v[i]</code> to <code>out[j]</code> we need a 1 at <code>A[j, i]</code> and 0 everywhere else:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>A     = [1, 0, 0, 0, 0] # shape (i, i)</span></span>
+<span class="line"><span>        [0, 1, 0, 0, 0]</span></span>
+<span class="line"><span>        [0, 0, 0, 1, 0]</span></span>
+<span class="line"><span>        [0, 0, 0, 0, 0]</span></span>
+<span class="line"><span>        [0, 0, 0, 0, 0]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>v     = [1, 2, 3, 4, 5] # shape (i,)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>A @ v = [1, 2, 4, 0, 0] # shape (i,)</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>In other words, the core of the problem boils down to how we can construct <code>A</code> dynamically using allowed tensor operations. We already figured out what output indexes we want each element to end up in in the previous section. To convert this to matrix <code>A</code> with 1s and 0s, we can compare that against a broadcast array of indexes: wherever there is a match, we should get a 1, and 0 everywhere else. The array of indexes should be formed as a column by <code>arange(i)[:, None]</code> to allow us to broadcast it into a <code>(N, N)</code> matrix after the comparison with <code>cumsum(g * 1) * g * 1</code>. This is how this will look:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">(arange(i)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#D73A49;--shiki-dark:#F97583"> ==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> cumsum(g </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> g </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># This generates our matrix A. We are basically comparing a column vector</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># with dimensions (N, 1) with a normal (row) vector with dimensions (1, N),</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># which will force an auto broadcast: the output matrix will have shape of</span></span>
+<span class="line"><span style="color:#6A737D;--shiki-dark:#6A737D"># (N, N)</span></span>
+<span class="line"></span></code></pre>
+<h3>Putting it all together</h3>
+<p>All we have to do to solve the problem now is take our <code>A</code> generator and multiply it with <code>v</code>, and we will have our solution:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> compress</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(g: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">bool</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], v: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ((arange(i)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#D73A49;--shiki-dark:#F97583"> ==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> cumsum(g </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> g </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> v</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 13</h2>
+<p><strong>Goal</strong>: Compute <code>pad_to</code> - eliminate or add 0s to change size of vector.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span></span></span>
+<span class="line"><span>Case 1 - Trimming based on j</span></span>
+<span class="line"><span>a      = [ 1, 2, 3, 4, 5]</span></span>
+<span class="line"><span>i      = 5</span></span>
+<span class="line"><span>j      = 3</span></span>
+<span class="line"><span>out    = [ 1, 2, 3]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Case 2 - Padding based on j</span></span>
+<span class="line"><span>a      = [ 1, 2, 3]</span></span>
+<span class="line"><span>i      = 3</span></span>
+<span class="line"><span>j      = 4</span></span>
+<span class="line"><span>out    = [ 1, 2, 3, 0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>In this puzzle, <code>a</code> is our vector, <code>i</code> is the number of elements in <code>a</code>, and <code>j</code> is the number of elements in the <code>out</code> vector.</p>
+<p>If you solved puzzle 12, this should be a piece of cake. We are going to reuse the same concept from the previous puzzle with matrix <code>A</code> to get our result. However, in this one, <code>A</code> will be either slicing or padding our vector. If we use <code>j</code> for our rows with <code>arange(j)[:, None]</code> and <code>i</code> for our columns with <code>arange(i)</code> we will create a <code>(j, i)</code> matrix that, when multiplied by our a vector, can support both cases as so:</p>
+<ul>
+<li>When <code>j &gt; i</code> we are in the padding case: The matrix has more rows than a has elements. The extra rows at the bottom find no matching column indices, so they fill up the <code>out</code> vector with 0s. Matrix multiplication correctly pads the output up to length j</li>
+<li>When <code>j &lt; i</code> we are in the trimming case: The matrix has fewer rows than <code>a</code> has elements. The excess input elements in a fall outside the row range of the matrix, meaning they are trimmed, leaving an output of exact length j.</li>
+</ul>
+<p>The resulting solution is:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> pad_to</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (arange(j)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i)) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#D73A49;--shiki-dark:#F97583"> @</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 14</h2>
+<p><strong>Goal</strong>: Compute <a href="https://www.tensorflow.org/api_docs/python/tf/sequence_mask"><code>sequence_mask</code></a> - pad out to length per batch.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>values = [ 1,  2,  1, -1,   2]</span></span>
+<span class="line"><span>         [ 0,  2, -2, -3,  -5]</span></span>
+<span class="line"><span>         [ 2,  0,  2,  1,  -5]</span></span>
+<span class="line"><span>         [ 1,  2,  2,  4,   2]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>length = [ 4,  1,  2,  2]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out =    [ 1,  2,  1, -1,   0] # Row 0 keeps 4 elements</span></span>
+<span class="line"><span>         [ 0,  0,  0,  0,   0] # Row 1 keeps 1 element (happens to be 0)</span></span>
+<span class="line"><span>         [ 2,  0,  0,  0,   0] # Row 2 keeps 2 elements (2nd element happens to be 0)</span></span>
+<span class="line"><span>         [ 1,  2,  0,  0,   0] # Row 3 keeps 2 elements</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We have a matrix <code>values</code> with a shape (i, j). We also get a vector <code>length</code> which has a shape (i,) and has integer values for the length of each row we want to mask (keep). All other values beyond the given length for each row should be turned to 0.</p>
+<p>We can create a mask matrix with the same shape as <code>values</code>, placing 1s where we want to keep the value and 0s where we want to discard it. Then we could multiply this mask matrix with our given <code>values</code> matrix and solve the problem. Here is how our mask should look for the given example:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>mask = [ 1,  1,  1,  1,   0] # Row 0 has 4 1s</span></span>
+<span class="line"><span>       [ 0,  0,  0,  0,   0] # Row 1 has 0 1s</span></span>
+<span class="line"><span>       [ 1,  1,  0,  0,   0] # Row 2 has 2 1s</span></span>
+<span class="line"><span>       [ 1,  1,  0,  0,   0] # Row 3 has 2 1s</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>To create this matrix I broadcast length as a (i, 1) vector and compared it to <code>arange(j)</code> to get the desired matrix shape of (i, j). This will result in a matrix of boolean values: the <code>greater than</code> operator will fill each row with <code>True</code> values where the column index is less than the one in <code>length</code> for that specific row, which is what we want.</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">mask </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> length[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(values.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<p>We can multiply this by a scalar (or a matrix of scalars) to convert this to actual integers, which is evidently what we have in <code>values</code>. Doing the final multiplication solves the problem:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> sequence_mask</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(values: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], length: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (length[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(values.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> values</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 15</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.bincount.html"><code>bincount</code></a> - count number of times an entry was seen.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [0, 3, 4, 3]</span></span>
+<span class="line"><span>j   = 5</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [1, 0, 0, 2, 1]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Essentially, the <code>out</code> vector has <code>j</code> elements. The element at position <code>i</code> counts the frequency of <code>i</code> in vector <code>a</code>. So in the example above, the element at index 3 counts how many 3s there are in <code>a</code>. To construct <code>out</code>, create a matrix with shape <code>(a.shape[0], j)</code> containing a 1 at <code>[i, a[i]]</code> and 0 elsewhere. Summing each column then gives the required frequencies. Here is how this would look for the above example:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>A = [ 1, 0, 0, 0, 0]</span></span>
+<span class="line"><span>    [ 0, 0, 0, 1, 0]</span></span>
+<span class="line"><span>    [ 0, 0, 0, 0, 1]</span></span>
+<span class="line"><span>    [ 0, 0, 0, 1, 0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>This matrix basically helps us build the <code>out</code> vector - if we sum each column, we have our result! Even though we can't use the common <code>sum</code> functions from Numpy/Pytorch we perform matrix multiplication with an array of 1s with the same shape as <code>a</code> to get the same result:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> bincount</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ones(a.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ((arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 16</h2>
+<p><strong>Goal</strong>: Compute <a href="https://pytorch-scatter.readthedocs.io/en/1.3.0/functions/add.html"><code>scatter_add</code></a> - add together values that link to the same location.</p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>values = [-2, 5, 0, 1, 2]</span></span>
+<span class="line"><span>link   = [ 2, 3, 0, 0, 2]</span></span>
+<span class="line"><span>j      = 4</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out    = [1, 0, 0, 5]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>We want to sum all values from <code>values</code> into <code>out</code> based on the indices laid out in <code>link</code>. An element of the <code>values</code> vector with index <code>i</code> gets its value summed at position <code>link[i]</code> in the <code>out</code> vector.</p>
+<p>As in the previous puzzle, the desired result can be obtained with matrix multiplication. Construct a matrix with a 1 at <code>[i, link[i]]</code> whenever <code>values[i]</code> should contribute to <code>out[link[i]]</code>. Then all we have to do is perform our matrix multiplication with <code>values</code> and we have solved the puzzle!</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> scatter_add</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(values: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], link: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> values </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ((arange(j)[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :] </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> link[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 17</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.flatten.html"><code>flatten</code></a></p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [ 3, -2, -2]</span></span>
+<span class="line"><span>      [-1, -2,  3]</span></span>
+<span class="line"><span>      [-4, -5, -4]</span></span>
+<span class="line"><span>      [ 3, -4, -4]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [ 3, -2, -2, -1, -2,  3, -4, -5, -4,  3, -4, -4]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>In this puzzle, we are trying to convert a given 2D array to a 1D vector. This switches things up from the previous puzzles since it uses a different trick: index conversion from 2D to 1D. We can select specific elements from our <code>a</code> array using the following syntax:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">a[[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], [</span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">2</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]]</span></span>
+<span class="line"></span></code></pre>
+<p>The first set of values indicates the row indexes and the second the column indexes. These get zipped together as pairs, so the above will return elements <code>[0, 2]</code> and <code>[1,2]</code> (elements -2, 3). Knowing this, the next step is to map the 1D indices of the final vector to the 2D indices of the input array. We can produce the 1D indexes by using <code>arange(i * j)</code>. To map each flattened 1D index to 2D, we can use integer division and modulo:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">row_indices </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j) </span><span style="color:#D73A49;--shiki-dark:#F97583">//</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">col_indices </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(i </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j) </span><span style="color:#D73A49;--shiki-dark:#F97583">%</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j</span></span>
+<span class="line"></span></code></pre>
+<p>And the problem is now solved.</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> flatten</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i * j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[arange(i </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j) </span><span style="color:#D73A49;--shiki-dark:#F97583">//</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j, arange(i </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j) </span><span style="color:#D73A49;--shiki-dark:#F97583">%</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> j]</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 18</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.linspace.html"><code>linspace</code></a></p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>i   = 0</span></span>
+<span class="line"><span>j   = 10</span></span>
+<span class="line"><span>n   = 5</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [0.0, 2.5, 5.0, 7.5, 10.0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The <code>linspace</code> function must return a vector of evenly spaced samples over a specified interval. To find the value at any given step, we need to know our <em>step size</em>. If we have <code>n</code> points, we actually have <code>n - 1</code> gaps between them. So, the total distance <code>(j - i)</code> divided by the number of gaps <code>(n - 1)</code> gives us our step size. We can multiply this step size by our current index <code>arange(n)</code> and add it to our starting point <code>i</code>:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">i </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(n) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (j </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i) </span><span style="color:#D73A49;--shiki-dark:#F97583">/</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (n </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<p>While this is theoretically correct, we have to account for the edge case where <code>n = 1</code>. In this case, the denominator will turn 0 and our result will be <code>nan</code> which is not the desired result.</p>
+<p>To fix this, we need to safeguard the denominator before the division happens. We can use the <code>where</code> function to force the denominator to be <code>1</code> instead of <code>0</code> whenever <code>n = 1</code>. Because <code>arange(1)</code> evaluates to <code>[0]</code>, multiplying our step by <code>0</code> will simply leave us with our starting value <code>i</code>, neatly avoiding the <code>nan</code> error. Safeguarding the denominator gives:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> linspace</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], j: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], n: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">int</span><span style="color:#24292E;--shiki-dark:#E1E4E8">) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"n"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">float</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> arange(n) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (j </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i) </span><span style="color:#D73A49;--shiki-dark:#F97583">/</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(n </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, n </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h3>Solving by reverse engineering the reference implementation</h3>
+<p>As an alternative way of solving it, we can arrive at the same solution by directly translating the <code>linspace_spec</code> into tensor operations without messing with the actual math:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> linspace_spec</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i, j, out):</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    for</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> k </span><span style="color:#D73A49;--shiki-dark:#F97583">in</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> range</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">len</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(out)):</span></span>
+<span class="line"><span style="color:#24292E;--shiki-dark:#E1E4E8">        out[k] </span><span style="color:#D73A49;--shiki-dark:#F97583">=</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> float</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(i </span><span style="color:#D73A49;--shiki-dark:#F97583">+</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (j </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> i) </span><span style="color:#D73A49;--shiki-dark:#F97583">*</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> k </span><span style="color:#D73A49;--shiki-dark:#F97583">/</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> max</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">len</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(out) </span><span style="color:#D73A49;--shiki-dark:#F97583">-</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">))</span></span>
+<span class="line"></span></code></pre>
+<p>This <code>for</code> loop can be broken down and mapped to our allowed PyTorch operations:</p>
+<ol>
+<li><code>len(out)</code>: this is our target length, <code>n</code></li>
+<li><code>k</code>: this is the loop index over <code>out</code> which can be replaced with a vector of indexes i.e. <code>arange(n)</code></li>
+<li><code>max(1, len(out) - 1))</code>: As above, this safeguards against division-by-zero when <code>n = 1</code>. Since we don't have access to the <code>max</code> function, we have to rebuild this logic. We can use our allowed <code>where</code> function: if <code>n &gt; 1</code>, we use <code>n - 1</code>, otherwise we default to <code>1</code>. This translates to <code>where(n &gt; 1, n - 1, 1)</code>.</li>
+</ol>
+<p>Everything else can stay as is. Substituting these tensor equivalents back into the original formula gives us our vectorized solution.</p>
+<blockquote>
+<p><strong>Note on Direction:</strong> This formula works seamlessly whether <code>j &gt; i</code> or <code>j &lt; i</code>. If <code>j &lt; i</code> (for example, stepping down from 10 to 0), <code>(j - i)</code> naturally evaluates to a negative number. Standard tensor arithmetic handles the sign automatically-multiplying a negative step size by <code>arange(n)</code> steadily decreases the value from <code>i</code> down to <code>j</code>.</p>
+</blockquote>
+<h2>Puzzle 19</h2>
+<p><strong>Goal</strong>: Compute <a href="https://numpy.org/doc/stable/reference/generated/numpy.heaviside.html"><code>heaviside</code></a></p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [ 2,  0, -2, -5,  0]</span></span>
+<span class="line"><span>b   = [-5,  3,  1, -5, -5]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [ 1,  3,  0,  0, -5]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The heaviside function is defined as:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>                   0 if a &#x3C;  0</span></span>
+<span class="line"><span>heaviside(a, b) =  b if a == 0</span></span>
+<span class="line"><span>                   1 if a >  0</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>The cleanest way I found to achieve this result is through the use of the <code>where</code> function. We want to sample from <code>b[i]</code> if <code>a[i] == 0</code> else we want to put either 1 or 0 in our <code>out[i]</code>, depending on whether the element in <code>a</code> is positive or not. It is very convenient to transform our <code>a</code> array to an array where instead of positive and negative elements, it has 1s (wherever the element is positive) and 0s (wherever the element is negative) - and sample from this. We don't care for elements that are already 0, since these will be handled by the other where clause.</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> heaviside</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], b: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> where(a </span><span style="color:#D73A49;--shiki-dark:#F97583">==</span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, b, a </span><span style="color:#D73A49;--shiki-dark:#F97583">></span><span style="color:#005CC5;--shiki-dark:#79B8FF"> 0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 20</h2>
+<p><strong>Goal</strong>: Compute <a href="https://pytorch.org/docs/stable/generated/torch.Tensor.repeat.html"><code>repeat</code></a></p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>a   = [-5, -2, -5, -1, 0]</span></span>
+<span class="line"><span>d   = 3</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out = [-5, -2, -5, -1, 0]</span></span>
+<span class="line"><span>      [-5, -2, -5, -1, 0]</span></span>
+<span class="line"><span>      [-5, -2, -5, -1, 0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>What we want is to repeat the input vector <code>a</code> <code>d</code> times, creating a 2D array. This problem requires nothing more than a simple matrix multiplication between an array of 1s and <code>a</code>. We just need to broadcast correctly. Since we know that matrix multiplication between a <code>(M, P)</code> shaped matrix and <code>(P, N)</code> shaped matrix results in a <code>(M, N)</code> shaped matrix, we can look at what shape we want our final matrix to be and infer the broadcast: Since <code>out</code> has a  <code>(d, a.shape[0])</code> shape, we understand that our first matrix should be an array of 1s broadcast to <code>(d, 1)</code> and our second matrix should be <code>a</code> broadcast to <code>(1, a.shape[0])</code>. This translates to the following solution:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> repeat</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], d: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"d"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ones(d)[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> a[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :]</span></span>
+<span class="line"></span></code></pre>
+<h3>Attempt 2</h3>
+<p>What we have above is basically the outer product between <code>ones(d)</code> and <code>a</code>, so we can save some characters by reusing the <code>outer</code> function from Puzzle 3:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> repeat</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(a: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], d: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"d"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, </span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> outer(ones(d), a)</span></span>
+<span class="line"></span></code></pre>
+<h2>Puzzle 21</h2>
+<p><strong>Goal</strong>: Compute <a href="https://pytorch.org/docs/stable/generated/torch.bucketize.html"><code>bucketize</code></a></p>
+<p><strong>Example</strong></p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>v          = [-1, 2, 5, 1, -3]</span></span>
+<span class="line"><span>boundaries = [ 1, 2, 3, 4]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>out        = [ 0, 2, 4, 1, 0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>This is another function that I didn't exactly know how it works. In the reference PyTorch documentation, it is defined as:</p>
+<blockquote>
+<p>Returns the indices of the buckets to which each value in the <code>input</code> belongs, where the boundaries of the buckets are set by <code>boundaries</code>. Return a new tensor with the same size as <code>input</code>.</p>
+</blockquote>
+<p>The boundaries array defines the following buckets:</p>
+<ul>
+<li>0th bucket -&gt; <code>(-inf, 1)</code></li>
+<li>1st bucket -&gt; <code>[1, 2)</code></li>
+<li>2nd bucket -&gt; <code>[2, 3)</code></li>
+<li>3rd bucket -&gt; <code>[3, 4)</code></li>
+</ul>
+<p>So we want the index of the bucket that each item falls into as the answer for each element. Additionally, we can calculate the value in <code>out[i]</code> by counting how many elements <code>v[i]</code> is greater or equal to from the <code>boundaries</code> array. We can start with a simple comparison broadcast between <code>v</code> and <code>boundaries</code>:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#D73A49;--shiki-dark:#F97583"> *</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (v[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> boundaries[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">, :])</span></span>
+<span class="line"></span></code></pre>
+<p>This will return a 2D array with shape (<code>v.shape[0]</code>, <code>boundaries.shape[0]</code>) where each row corresponds to an element in <code>v</code> and each column corresponds to an element in <code>boundaries</code>. If the element <code>[i,j]</code> is 1, that means that <code>v[i]</code> is larger or equal to <code>boundaries[j]</code>, otherwise it is 0. Here is the output of this in our example case:</p>
+<pre data-language="text" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span>[0, 0, 0, 0]</span></span>
+<span class="line"><span>[1, 1, 0, 0]</span></span>
+<span class="line"><span>[1, 1, 1, 1]</span></span>
+<span class="line"><span>[1, 0, 0, 0]</span></span>
+<span class="line"><span>[0, 0, 0, 0]</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>Now that we have this matrix, all we have to do is <code>sum</code> on the row axis - something we can achieve by multiplying with a column of 1s. We don't need to broadcast explicitly, PyTorch will do this for us automatically. Our final solution is the following:</p>
+<pre data-language="python" class="shiki shiki-themes github-light github-dark" style="background-color:#fff;--shiki-dark-bg:#24292e;color:#24292e;--shiki-dark:#e1e4e8" tabindex="0"><code><span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">def</span><span style="color:#6F42C1;--shiki-dark:#B392F0"> bucketize</span><span style="color:#24292E;--shiki-dark:#E1E4E8">(v: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">], boundaries: </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"j"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]) -> </span><span style="color:#005CC5;--shiki-dark:#79B8FF">TT</span><span style="color:#24292E;--shiki-dark:#E1E4E8">[</span><span style="color:#032F62;--shiki-dark:#9ECBFF">"i"</span><span style="color:#24292E;--shiki-dark:#E1E4E8">]:</span></span>
+<span class="line"><span style="color:#D73A49;--shiki-dark:#F97583">    return</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="color:#005CC5;--shiki-dark:#79B8FF">1</span><span style="color:#D73A49;--shiki-dark:#F97583"> *</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> (v[:, </span><span style="color:#005CC5;--shiki-dark:#79B8FF">None</span><span style="color:#24292E;--shiki-dark:#E1E4E8">] </span><span style="color:#D73A49;--shiki-dark:#F97583">>=</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> boundaries)) </span><span style="color:#D73A49;--shiki-dark:#F97583">@</span><span style="color:#24292E;--shiki-dark:#E1E4E8"> ones(boundaries.shape[</span><span style="color:#005CC5;--shiki-dark:#79B8FF">0</span><span style="color:#24292E;--shiki-dark:#E1E4E8">])</span></span>
+<span class="line"></span></code></pre>
+<blockquote>
+<p><strong>Note</strong>: I removed the explicit broadcast from <code>boundaries</code> to save some characters - it is also done implicitly since we run the comparison with the broadcast <code>v</code>.</p>
+</blockquote>
+<h2>Benchmarks</h2>
+<p>Here are the benchmark results for my solutions:</p>
+<table>
+<thead>
+<tr>
+<th><strong>puzzle</strong></th>
+<th><strong>chars</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ones</td>
+<td>36</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>41</td>
+</tr>
+<tr>
+<td>outer</td>
+<td>34</td>
+</tr>
+<tr>
+<td>diag</td>
+<td>52</td>
+</tr>
+<tr>
+<td>eye</td>
+<td>57</td>
+</tr>
+<tr>
+<td>triu</td>
+<td>57</td>
+</tr>
+<tr>
+<td>cumsum</td>
+<td>31</td>
+</tr>
+<tr>
+<td>diff</td>
+<td>31</td>
+</tr>
+<tr>
+<td>vstack</td>
+<td>64</td>
+</tr>
+<tr>
+<td>roll</td>
+<td>33</td>
+</tr>
+<tr>
+<td>flip</td>
+<td>31</td>
+</tr>
+<tr>
+<td>compress</td>
+<td>66</td>
+</tr>
+<tr>
+<td>pad_to</td>
+<td>52</td>
+</tr>
+<tr>
+<td>sequence_mask</td>
+<td>63</td>
+</tr>
+<tr>
+<td>bincount</td>
+<td>70</td>
+</tr>
+<tr>
+<td>scatter_add</td>
+<td>63</td>
+</tr>
+<tr>
+<td>flatten</td>
+<td>51</td>
+</tr>
+<tr>
+<td>linspace</td>
+<td>51</td>
+</tr>
+<tr>
+<td>heaviside</td>
+<td>34</td>
+</tr>
+<tr>
+<td>repeat</td>
+<td>28</td>
+</tr>
+<tr>
+<td>bucketize</td>
+<td>71</td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+</article>
+
+  </main>
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer">
+    <figure class="image-viewer-figure">
+      <div class="image-viewer-frame">
+        <img data-image-preview alt="">
+      </div>
+      <figcaption data-image-caption></figcaption>
+    </figure>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Aris Christoforidis</span>
+      <span class="footer-links">
+        <a href="mailto:contact.arisc@gmail.com">email</a>
+        <a href="https://github.com/ArisChristoforidis">github</a>
+      </span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span>theme</span>
+      </button>
+    </div>
+  </footer>
+</body>
+</html>

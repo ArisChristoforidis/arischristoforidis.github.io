@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A field log for photographing the Messier catalog with a Sony a6700 and Sigma 18-50mm lens.">
+  <meta name="theme-color" content="#f3f0e9">
+  <title>The Messier Run · christoforidis.dev</title>
+
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (_) {
+        // Use the system preference when storage is unavailable.
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/image-viewer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-nav">
+      <a class="site-name" href="/" aria-label="christoforidis.dev home">christoforidis.dev</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/programming/">projects</a></li>
+          <li><a href="/posts/">notes</a></li>
+          <li><a href="/explore/">explore</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="main-content" class="messier-page">
+    <p>astrophotography / field log 01</p>
+<h1>The Messier Run</h1>
+<p>I am working my way through the 110 Messier objects with a Sony a6700 and a Sigma 18-50mm. Some will fit the frame; others will be notes for a future lens.</p>
+<h2>Progress, at a glance</h2>
+<div class="messier-panel messier-grid-panel" id="catalog" aria-label="Messier catalog progress">
+  <div class="messier-panel-inner">
+    <div class="messier-progress-summary">
+      <div class="messier-progress-header">
+        <div>
+          <span class="messier-label">catalog coverage</span>
+          <strong><span class="messier-progress-count" data-progress-count>01</span><span>/ 110</span></strong>
+        </div>
+        <span data-progress-percent>1% captured</span>
+      </div>
+      <div class="messier-progress-bar" role="progressbar" aria-label="Messier catalog progress" aria-valuemin="0" aria-valuemax="110" aria-valuenow="1">
+        <span data-progress-fill style="--progress: 0.91%"></span>
+      </div>
+      <div class="messier-progress-footer"><span data-progress-captured>1 photographed</span><span data-progress-ahead>109 still ahead</span></div>
+    </div>
+    <div class="messier-grid-layout">
+      <div class="messier-grid-column">
+        <div class="messier-grid-scroll">
+          <div class="messier-grid" data-messier-grid role="grid" aria-label="Interactive 11 by 10 grid of all 110 Messier objects"></div>
+        </div>
+        <div class="messier-legend" aria-label="Catalog status legend">
+          <span><i class="is-visible" aria-hidden="true"></i> visible now</span>
+          <span><i aria-hidden="true"></i> not visible now</span>
+        </div>
+      </div>
+      <div class="messier-detail" aria-live="polite" data-messier-detail>
+        <span class="messier-label" data-detail-state>captured</span>
+        <div class="messier-detail-heading">
+          <h3 data-detail-title>Andromeda Galaxy</h3>
+          <a class="messier-detail-link messier-detail-wikipedia" data-detail-wikipedia href="#" target="_blank" rel="noreferrer" aria-label="Open Wikipedia article" title="Open Wikipedia article">↗</a>
+        </div>
+        <div class="messier-detail-meta" data-detail-meta>M31 / spiral galaxy</div>
+        <div class="messier-detail-catalog" data-detail-catalog>RA 0h 41.8m · Dec +41° 16′ · mag 3.4</div>
+        <dl class="messier-detail-facts">
+          <div>
+            <dt>ideal capture window</dt>
+            <dd data-detail-window>December - February</dd>
+          </div>
+        </dl>
+        <div class="messier-detail-gallery" data-detail-gallery hidden>
+          <span class="messier-label">images</span>
+          <div class="messier-detail-gallery-grid" data-detail-gallery-items></div>
+        </div>
+        <a class="messier-detail-link" data-detail-link hidden href="#">read field note -&gt;</a>
+      </div>
+    </div>
+  </div>
+</div>
+<h2>Upcoming capture windows</h2>
+<div class="messier-section messier-windows" aria-label="Upcoming capture windows">
+  <div class="messier-window-chart">
+    <div class="messier-window-months" aria-hidden="true">
+      <span aria-hidden="true"></span>
+      <div class="messier-window-month-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
+      <span aria-hidden="true"></span>
+    </div>
+    <div class="messier-window-rows" data-window-rows></div>
+  </div>
+</div>
+<script defer src="/js/messier.js"></script>
+
+  </main>
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer">
+    <figure class="image-viewer-figure">
+      <div class="image-viewer-frame">
+        <img data-image-preview alt="">
+      </div>
+      <figcaption data-image-caption></figcaption>
+    </figure>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Aris Christoforidis</span>
+      <span class="footer-links">
+        <a href="mailto:contact.arisc@gmail.com">email</a>
+        <a href="https://github.com/ArisChristoforidis">github</a>
+      </span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span>theme</span>
+      </button>
+    </div>
+  </footer>
+</body>
+</html>

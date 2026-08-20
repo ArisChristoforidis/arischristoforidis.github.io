@@ -1,45 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔗 Synoche</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+  <meta name="description" content="The personal website of Aris Christoforidis.">
+  <meta name="theme-color" content="#f3f0e9">
+  <title>🔗 Synoche · christoforidis.dev</title>
+
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (_) {
+        // Use the system preference when storage is unavailable.
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/image-viewer.js"></script>
 </head>
 <body>
-  <div class="navbar">
-    <div class="navbar-content">
-      <a class="navbar-name" href="/">christoforidis.dev</a>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-nav">
+      <a class="site-name" href="/" aria-label="christoforidis.dev home">christoforidis.dev</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/programming/">projects</a></li>
+          <li><a href="/posts/">notes</a></li>
+          <li><a href="/explore/">explore</a></li>
+        </ul>
+      </nav>
+
+    </div>
+  </header>
+
+  <main id="main-content">
+    
+<article class="article">
+  <header class="article-header">
+    <p class="eyebrow">project</p>
+    <h1>🔗 Synoche</h1>
+    <time class="post-meta" datetime="2025-06-30">30 Jun 2025</time>
+
+    
+    <div class="post-tags" aria-label="Categories">
       
-        <nav class="navbar-links">
-            <ul>
-                <li><a href="/programming/">programming</a></li>
-                <!-- <li><a href="/resume/">resume</a></li>
-                <li><a href="/explore/">explore</a></li>
-                <li><a href="/posts/">posts</a></li> -->
-            </ul>
-        </nav>
-    </div>
-  </div>
-  <main>
-    
-<div>
-    <h2>🔗 Synoche</h2>
-
-    
-    <div class="post-tags">
-        
-        <span class="post-tag">hackathons</span> 
-        
+        <span class="post-tag">hackathons</span>
+      
         <span class="post-tag">games</span>
-        
+      
     </div>
     
+  </header>
 
-    <div class="post-content">
-        <p><img src="/assets/synoche/title_static_blue.png" alt="Banner"></p>
+  <div class="post-content">
+    <p><img src="/assets/synoche/title_static_blue.png" alt="Synoche title graphic"></p>
 <h2>Links</h2>
 <ul>
 <li><a href="https://devpost.com/software/synoche">Project Page</a></li>
@@ -51,13 +73,36 @@
 <p><strong>(firetruck) -&gt; (truck bed) -&gt; (bed bug)</strong></p>
 <p>I used Devvit with React Webviews inside Bolt, guiding the LLM to write and refine features through iterative prompts. While debugging occasionally required detailed descriptions or code examples, the overall development was fast and efficient. The result is a clean, responsive app that includes both gameplay and a custom puzzle editor for user-generated content.</p>
 <h2>Screenshots</h2>
-<p><img src="/assets/synoche/1.png" alt="Banner" data-lightbox="gallery"></p>
-<p><img src="/assets/synoche/2.png" alt="Banner" data-lightbox="gallery"></p>
-<p><img src="/assets/synoche/6.png" alt="Banner" data-lightbox="gallery"></p>
-<p><img src="/assets/synoche/7.png" alt="Banner" data-lightbox="gallery"></p>
+<p><img src="/assets/synoche/1.png" alt="Synoche gameplay screenshot"></p>
+<p><img src="/assets/synoche/2.png" alt="Synoche gameplay screenshot"></p>
+<p><img src="/assets/synoche/6.png" alt="Synoche puzzle editor screenshot"></p>
+<p><img src="/assets/synoche/7.png" alt="Synoche gameplay screenshot"></p>
 
-    </div>
-</div>
+  </div>
+</article>
+
   </main>
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer">
+    <figure class="image-viewer-figure">
+      <div class="image-viewer-frame">
+        <img data-image-preview alt="">
+      </div>
+      <figcaption data-image-caption></figcaption>
+    </figure>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Aris Christoforidis</span>
+      <span class="footer-links">
+        <a href="mailto:contact.arisc@gmail.com">email</a>
+        <a href="https://github.com/ArisChristoforidis">github</a>
+      </span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span>theme</span>
+      </button>
+    </div>
+  </footer>
 </body>
 </html>

@@ -1,38 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Blog Post</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
+  <meta name="description" content="The personal website of Aris Christoforidis.">
+  <meta name="theme-color" content="#f3f0e9">
+  <title>My First Blog Post · christoforidis.dev</title>
+
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.dataset.theme = saved;
+        }
+      } catch (_) {
+        // Use the system preference when storage is unavailable.
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="/css/style.css">
+  <script defer src="/js/theme.js"></script>
+  <script defer src="/js/image-viewer.js"></script>
 </head>
 <body>
-  <div class="navbar">
-    <div class="navbar-content">
-      <a class="navbar-name" href="/">christoforidis.dev</a>
-      
-        <nav class="navbar-links">
-            <ul>
-                <li><a href="/programming/">programming</a></li>
-                <!-- <li><a href="/resume/">resume</a></li>
-                <li><a href="/explore/">explore</a></li>
-                <li><a href="/posts/">posts</a></li> -->
-            </ul>
-        </nav>
-    </div>
-  </div>
-  <main>
-    
-<div>
-    <h2>My First Blog Post</h2>
-    <div class="post-content">
-        <h2></h2>
-<p>Hello</p>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header">
+    <div class="site-nav">
+      <a class="site-name" href="/" aria-label="christoforidis.dev home">christoforidis.dev</a>
+
+      <nav aria-label="Primary navigation">
+        <ul class="nav-links">
+          <li><a href="/programming/">projects</a></li>
+          <li><a href="/posts/">notes</a></li>
+          <li><a href="/explore/">explore</a></li>
+        </ul>
+      </nav>
 
     </div>
-</div>
+  </header>
+
+  <main id="main-content">
+    
+<article class="article">
+  <header class="article-header">
+    <p class="eyebrow">note</p>
+    <h1>My First Blog Post</h1>
+    <time class="post-meta" datetime="2025-06-14">14 Jun 2025</time>
+  </header>
+  <div class="post-content">
+    <p>Hello</p>
+
+  </div>
+</article>
+
   </main>
+
+  <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer">
+    <figure class="image-viewer-figure">
+      <div class="image-viewer-frame">
+        <img data-image-preview alt="">
+      </div>
+      <figcaption data-image-caption></figcaption>
+    </figure>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <span>© 2026 Aris Christoforidis</span>
+      <span class="footer-links">
+        <a href="mailto:contact.arisc@gmail.com">email</a>
+        <a href="https://github.com/ArisChristoforidis">github</a>
+      </span>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+        <span>theme</span>
+      </button>
+    </div>
+  </footer>
 </body>
 </html>
