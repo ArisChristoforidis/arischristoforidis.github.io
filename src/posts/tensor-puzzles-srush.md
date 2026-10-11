@@ -1,6 +1,6 @@
 ---
 layout: "post.njk"
-title: "Tensor Puzzles (SRush)"
+title: "Tensor puzzles"
 date: 2026-08-20
 tags: ["posts", "machine-learning", "pytorch"]
 summary: "Solving Sasha Rush's tensor puzzles with constrained PyTorch operations."

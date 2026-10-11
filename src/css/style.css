@@ -2262,3 +2262,10 @@ main.messier-page {
     height: 12rem;
   }
 }
+
+/* Keep long display equations scrollable on smaller screens. */
+.post-content .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
