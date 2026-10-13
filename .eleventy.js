@@ -6,12 +6,16 @@ module.exports = async function(eleventyConfig) {
   const markdownItAttrsModule = await import("markdown-it-attrs");
   const { createHighlighter } = await import("shiki");
 
+  const { default: texmath } = await import("markdown-it-texmath");
+  const { default: katex } = await import("katex");
+
   const markdownIt = markdownItModule.default;
   const markdownItAttrs = markdownItAttrsModule.default;
 
   eleventyConfig.addPassthroughCopy("src/css");
   eleventyConfig.addPassthroughCopy("src/js");
   eleventyConfig.addPassthroughCopy("src/assets");
+  eleventyConfig.addPassthroughCopy({ "node_modules/katex/dist": "assets/katex" });
 
   eleventyConfig.addGlobalData("buildYear", new Date().getFullYear());
 
@@ -114,7 +118,11 @@ module.exports = async function(eleventyConfig) {
         '<pre data-language="' + language + '" class="shiki',
       );
     },
-  }).use(markdownItAttrs);
+  }).use(markdownItAttrs).use(texmath, {
+    engine: katex,
+    delimiters: "dollars",
+    katexOptions: { throwOnError: true, trust: false },
+  });
   eleventyConfig.setLibrary("md", md);
 
   return {
